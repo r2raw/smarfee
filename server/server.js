@@ -254,7 +254,6 @@ app.post(
       const pdfClearance = req.files["clearance"][0];
       const validId = req.files["validid"][0];
 
-      console.log(req.body)
       const base64Data = req.body.vendorImg.replace(
         /^data:image\/jpeg;base64,/,
         ""
@@ -272,6 +271,7 @@ app.post(
       const today = dayjs(Date.now()).format("YYYY/MM/DD HH:mm:ss");
       const operatingDetails = await JSON.parse(operatingDetailsString);
 
+      console.log(operatingDetails)
       const vendorCount = await getVendorCount(db);
       const vendorId = PadZeroes(vendorCount + 1, 3);
       const registrationStore = await RegisterStore(

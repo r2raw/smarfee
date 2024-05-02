@@ -2703,6 +2703,7 @@ main.deactivated-user > div button {
 
 .discounts {
   padding: 20px;
+  box-shadow: var(--smooth-shadow-whitebg);
 }
 .discounts input {
   border: 1px solid var(--color-tertiary);
@@ -2720,7 +2721,7 @@ main.deactivated-user > div button {
   width: 100%;
 }
 
-.discounts .searched-product .product-info{
+.discounts .searched-product .product-info {
   display: flex;
   gap: 20px;
   align-items: center;
@@ -2729,25 +2730,53 @@ main.deactivated-user > div button {
   width: 150px;
   height: 150px;
   border-radius: 10px;
-  box-shadow: var(--smooth-shadow-whitebg);
 }
 .discounts .searched-product .img-container img {
   border-radius: 10px;
 }
-
+.discounts .searched-product form .voucher-upload {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .discounts .searched-product form .img-container {
   background-color: var(--color-graye);
 }
+.discounts .searched-product form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 20px;
+  box-shadow: var(--smooth-shadow-whitebg);
+  border-radius: 10px;
+}
 
-.discounts .searched-product form .img-container + label{
+.discounts .searched-product form > button {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.discounts .searched-product form .form-content {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 20px;
+}
+.discounts .searched-product form .img-container + label {
   background-color: var(--color-tertiary);
   color: var(--color-white);
   padding: 10px;
   cursor: pointer;
   border-radius: 10px;
+  text-align: center;
 }
 
-.discounts .searched-product form .voucher-upload{
+.discounts .searched-product form .voucher-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.discounts .searched-product form .voucher-duration .voucher-date {
   display: flex;
   flex-direction: column;
   gap: 10px;
