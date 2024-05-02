@@ -1,6 +1,9 @@
 import React from "react";
 import img1 from "../../my-images/userImg/default.jpg";
+import dayjs from "dayjs";
 function Discounts() {
+  const tomorrow = dayjs(Date.now()).add(1, "day").format("YYYY-MM-DD");
+
   return (
     <div className="discounts card">
       <h1>Discounts</h1>
@@ -35,9 +38,39 @@ function Discounts() {
             />
           </div>
           <div>
-            <div className="input-group">
-                <input type="date" placeholder=" " />
-                <span className='floating-label'>Start date</span>
+            <div>
+              <div className="input-group">
+                <input
+                  type="date"
+                  placeholder=" "
+                  min={tomorrow}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                  }}
+                />
+                <span className="floating-label">Start date</span>
+              </div>
+              <div className="input-group">
+                <input type="time" placeholder=" " />
+                <span className="floating-label">Start time</span>
+              </div>
+            </div>
+            <div>
+              <div className="input-group">
+                <input
+                  type="date"
+                  placeholder=" "
+                  min={tomorrow}
+                  onKeyDown={(e) => {
+                    e.preventDefault();
+                  }}
+                />
+                <span className="floating-label">End date</span>
+              </div>
+              <div className="input-group">
+                <input type="time" placeholder=" " />
+                <span className="floating-label">End time</span>
+              </div>
             </div>
           </div>
         </form>
