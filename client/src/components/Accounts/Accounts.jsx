@@ -13,7 +13,7 @@ function Accounts() {
   if (!userData) return <MainLoader />;
   return (
     <section className="container user-account">
-      <AccountFormOne />
+      <AccountFormOne userData={userData.user_data} />
       <AccountFormTwo userData={userData.user_data} />
     </section>
   );

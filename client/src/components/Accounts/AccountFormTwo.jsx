@@ -4,10 +4,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import formatDate from "../MyFunctions/EighteenYearsAgo";
 import dayjs from "dayjs";
-import { set } from "lodash";
+import axios from "axios";
 function AccountFormTwo(props) {
   const { userData } = props;
   const [disabled, setDisabled] = useState(true);
+  const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({
     phone: "",
     email: "",
@@ -48,25 +49,62 @@ function AccountFormTwo(props) {
     handleInputChange(e);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     let valid = true;
 
-    for(const fieldname in values){
-      if(!values[fieldname]){
+    for (const fieldname in values) {
+      if (!values[fieldname]) {
         valid = false;
       }
     }
 
-    for (const error in errors){
-      if(errors[error] !== ""){
+    for (const error in errors) {
+      if (errors[error] !== "") {
         valid = false;
       }
     }
 
     setDisabled(!valid);
-  },[values, errors])
+  }, [values, errors]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `/update-user-info/${userData.id}`,
+        values
+      );
+
+      if (response.data.status === "success") {
+        return setSuccess(true);
+      }
+
+      setErrors((prev) => ({ ...prev, email: response.data.message }));
+    } catch (error) {
+      console.error("Account update error: " + error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+    }
+  }, [success]);
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
+      {success && (
+        <p
+          style={{
+            width: "100%",
+            textAlign: "center",
+            backgroundColor: "#8DECB4",
+          }}
+        >
+          Updated successfully!
+        </p>
+      )}
       <div className="input-group">
         <input
           type="text"
@@ -101,7 +139,7 @@ function AccountFormTwo(props) {
         />
         <span className="floating-label">Email</span>
       </div>
-      {errors.email !== '' && <p className="invalid">{errors.email}</p>}
+      {errors.email !== "" && <p className="invalid">{errors.email}</p>}
       <p>Sex</p>
       <div className="radio-container">
         <input
@@ -140,20 +178,23 @@ function AccountFormTwo(props) {
           required
         />
       </div>
-      {errors.phone !== '' && <p className="invalid">{errors.phone}</p>}
+      {errors.phone !== "" && <p className="invalid">{errors.phone}</p>}
       <p>Birthdate:</p>
       <div className="birthdate-container">
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             maxDate={dayjs().subtract(18, "year")}
             minDate={dayjs().subtract(100, "year")}
+            value={dayjs(values.birthdate)}
             inputProps={{ readOnly: true }}
             onChange={handleDateChange}
           />
         </LocalizationProvider>
       </div>
 
-      <button className="solid tertiary fade" disabled={disabled}>Submit</button>
+      <button className="solid tertiary fade" disabled={disabled}>
+        Submit
+      </button>
     </form>
   );
 }

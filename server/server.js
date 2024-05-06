@@ -58,6 +58,11 @@ import fetchOrders from "./MyServerFunctions/Vendor/fetchOrders.js";
 import InsertOnlineOrder from "./MyServerFunctions/Customer/InsertOnlineOrder.js";
 import fetchUserOrder from "./MyServerFunctions/Customer/fetchUserOrder.js";
 import fetchUserData from "./MyServerFunctions/Customer/fetchUserData.js";
+import verifyEmailUpdate from "./MyServerFunctions/verifyEmailUpdate.js";
+import verifyUserProfileExist from "./MyServerFunctions/Customer/verifyUserProfileExist.js";
+import updateUserProfile from "./MyServerFunctions/Customer/updateUserProfile.js";
+import insertUserProfile from "./MyServerFunctions/Customer/insertUserProfile.js";
+import updateUserEmail from "./MyServerFunctions/updateUserEmail.js";
 const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -138,17 +143,17 @@ app.get("/api", async (req, res) => {
   res.json({ nearbyCafe: nearbyCafes });
 });
 
-app.get("/user-info/:uid", async (req,res)=>{
+app.get("/user-info/:uid", async (req, res) => {
   try {
-    const {uid} = req.params;
-    const user_order = await fetchUserOrder(db, uid)
+    const { uid } = req.params;
+    const user_order = await fetchUserOrder(db, uid);
     const userData = await fetchUserData(db, uid);
-    
-    return res.json({user_order: user_order, user_data: userData})
+
+    return res.json({ user_order: user_order, user_data: userData });
   } catch (error) {
-    console.error("/user-info error: " + error.message)
+    console.error("/user-info error: " + error.message);
   }
-})
+});
 
 app.post("/login", async (req, res) => {
   try {
@@ -253,7 +258,8 @@ app.post("/validate-store-registration", async (req, res) => {
     console.log("validate errpr: " + error.message);
   }
 });
-app.post("/store-registration",
+app.post(
+  "/store-registration",
   uploadStoreCreds.fields([
     { name: "storeImg", maxCount: 1 },
     { name: "dti", maxCount: 1 },
@@ -606,9 +612,6 @@ app.post("/uploadUpdateProduct", async (req, res) => {
     }
 
     console.log("not success");
-    // if (insertProduct.rowCount > 0) {
-    //   return res.json({ status: "success" });
-    // }
   } catch (error) {
     console.error("uploadProduct error: " + error.message);
   }
@@ -648,7 +651,8 @@ app.post("/POSPayment", async (req, res) => {
   try {
     console.log(req.body);
 
-    const { items, amountToPay, change, enteredAmount, service_type } = req.body;
+    const { items, amountToPay, change, enteredAmount, service_type } =
+      req.body;
     const orderNumber = await orderCount(db);
     const order_number = PadZeroes(parseInt(orderNumber) + 1, 8);
 
@@ -681,25 +685,69 @@ app.post("/POSPayment", async (req, res) => {
 app.post("/Online-order/:uid", async (req, res) => {
   try {
     const { uid } = req.params;
-  
-    const {items, service_type} = req.body;
+
+    const { items, service_type } = req.body;
     const orderNumber = await orderCount(db);
     const order_number = PadZeroes(parseInt(orderNumber) + 1, 8);
-    
-    let completed = true;
-    for(let i = 0;i < items.length; i++){
-      const insertResult = await InsertOnlineOrder(db, items[i].storeId, items[i].productId, uid, order_number, items[i].quantity, items[i].computedPrice, service_type);
 
-      if(!insertResult){
+    let completed = true;
+    for (let i = 0; i < items.length; i++) {
+      const insertResult = await InsertOnlineOrder(
+        db,
+        items[i].storeId,
+        items[i].productId,
+        uid,
+        order_number,
+        items[i].quantity,
+        items[i].computedPrice,
+        service_type
+      );
+
+      if (!insertResult) {
         completed = false;
       }
     }
 
-    if(completed){
-      return res.json({status: 'success'})
+    if (completed) {
+      return res.json({ status: "success" });
     }
   } catch (error) {
-    console.error('/Online-order/ error: ' + error.message)
+    console.error("/Online-order/ error: " + error.message);
+  }
+});
+app.post("/update-user-info/:uid", async (req, res) => {
+  try {
+    const { uid } = req.params;
+
+    const { email } = req.body;
+
+    const emailVerified = await verifyEmailUpdate(db, email, uid);
+
+    if (emailVerified > 0) {
+      return res.json({ status: "invalid", message: "Email already exist!" });
+    }
+
+    const updateEmail = await updateUserEmail(db, uid, email);
+
+    if (updateEmail) {
+      const userExist = await verifyUserProfileExist(db, uid);
+
+      if (userExist) {
+        const updateUser = await updateUserProfile(db, req.body, uid);
+
+        if (updateUser) {
+          return res.json({ status: "success" });
+        }
+      }
+
+      const userInsert = await insertUserProfile(db, req.body, uid);
+
+      if (userInsert) {
+        return res.json({ status: "success" });
+      }
+    }
+  } catch (error) {
+    console.error("update user error: " + error.message);
   }
 });
 function authenticateToken(req, res, next) {
