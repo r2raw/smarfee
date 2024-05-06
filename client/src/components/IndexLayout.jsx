@@ -163,6 +163,7 @@ function IndexLayout() {
     setUid(uid);
   };
   if (!backendData) return <MainLoader />;
+  console.log(backendData)
   return (
     <div className="container">
       <Header order={orders} getUid={getUid} products={backendData.products} />

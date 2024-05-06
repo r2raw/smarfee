@@ -48,7 +48,6 @@ function NearestCafe() {
     }
   };
 
-console.log(geoInfo)
   return (
     <div className="cafes">
       {!viewMore

@@ -100,14 +100,12 @@ function Header(props) {
           _.lowerCase(i.productname) === _.lowerCase(search) ||
           _.lowerCase(i.productname).includes(_.lowerCase(search))
       );
-      console.log(filter);
       setFilteredProducts(filter);
       return;
     }
     setFilteredProducts("");
   }, [search]);
 
-  console.log(props.products);
   return (
     <header className="client-header">
       <Link to="/">
@@ -125,7 +123,9 @@ function Header(props) {
         <span className="input-icon">
           <SearchSharpIcon />
         </span>
-        {search && <ProductSearch products={filteredProduct} />}
+        {filteredProduct && search && (
+          <ProductSearch products={filteredProduct} />
+        )}
       </div>
       <ul className="client nav-links">
         <li>
