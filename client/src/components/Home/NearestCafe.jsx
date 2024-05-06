@@ -8,7 +8,7 @@ function NearestCafe() {
 
   const [ipAddress, setIpAddress] = useState();
   const [geoInfo, setGeoInfo] = useState();
-  const [nearestCafe, setNearestCafe] = useState();
+  // const [nearestCafe, setNearestCafe] = useState();
   const toggleViewMore = () => {
     setViewMore(!viewMore);
   };
@@ -21,32 +21,32 @@ function NearestCafe() {
       .catch((error) => {});
   }, []);
 
-  useEffect(() => {
-    getVisitorIp();
-  }, []);
+  // useEffect(() => {
+  //   getVisitorIp();
+  // }, []);
 
-  const getVisitorIp = async () => {
-    try {
-      const response = await fetch(`https://api.ipify.org?format=json`);
-      const data = await response.json();
-      setIpAddress(data.ip);
-    } catch (error) {
-      console.error("Failed to fetch IP: " + error);
-    }
-  };
+  // const getVisitorIp = async () => {
+  //   try {
+  //     const response = await fetch(`https://api.ipify.org?format=json`);
+  //     const data = await response.json();
+  //     setIpAddress(data.ip);
+  //   } catch (error) {
+  //     console.error("Failed to fetch IP: " + error);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchGeoInfo();
-  }, [ipAddress]);
-  const fetchGeoInfo = async () => {
-    try {
-      const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
-      const data = await response.json();
-      setGeoInfo(data);
-    } catch (error) {
-      console.error("Failed to fetch IP info: " + error);
-    }
-  };
+  // useEffect(() => {
+  //   fetchGeoInfo();
+  // }, [ipAddress]);
+  // const fetchGeoInfo = async () => {
+  //   try {
+  //     const response = await fetch(`http://ip-api.com/json/${ipAddress}`);
+  //     const data = await response.json();
+  //     setGeoInfo(data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch IP info: " + error);
+  //   }
+  // };
 
   return (
     <div className="cafes">
@@ -56,13 +56,13 @@ function NearestCafe() {
             .sort((a, b) => a.distance - b.distance)
             .slice(0, 1)
             .map((i, index) => (
-              <NearCafe key={index} store={i} geoInfo={geoInfo} />
+              <NearCafe key={index} store={i}/>
             ))
         : backendData &&
           backendData.nearbyCafe
             .sort((a, b) => a.distance - b.distance)
             .map((i, index) => (
-              <NearCafe key={index} store={i} geoInfo={geoInfo} />
+              <NearCafe key={index} store={i} />
             ))}
       <button className="tertiary" onClick={toggleViewMore}>
         <p>{viewMore ? "Show less" : "View more"}</p> <ArrowForwardSharpIcon />
