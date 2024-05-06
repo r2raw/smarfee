@@ -70,8 +70,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 5000
 app.use(
   cors({
-    origin: 'https://smarfee-client.vercel.app',
-    methods: ['GET', 'POST'], // Add other methods if needed (e.g., PUT, DELETE)
+    origin: 'https://smarfee-client.vercel.app/',
+    methods: ['GET', 'POST'], 
     allowedHeaders: ['Content-Type', 'Authorization'], // Include additional headers if required
     credentials: true, // Allow credentials (cookies, authorization headers)
   })
