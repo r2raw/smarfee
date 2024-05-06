@@ -11,7 +11,7 @@ function IndexLayout() {
 
   useEffect(() => {
     axios
-      .get("/display-product")
+      .get(`${process.env.BASE_BACKEND_URL}/display-product`)
       .then((res) => setBackendData(res.data))
       .catch((err) => console.error("display prod error: " + err.message));
   }, []);
