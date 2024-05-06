@@ -66,7 +66,7 @@ import updateUserEmail from "./MyServerFunctions/updateUserEmail.js";
 const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
-const port = env.process.PORT
+const port = process.env.PORT || 5000
 app.use(
   cors({
     credentials: true,
