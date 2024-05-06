@@ -197,6 +197,7 @@ app.post("/login", async (req, res) => {
 app.post("/place-order", async (req, res) => {});
 app.get("/display-product", async (req, res) => {
   try {
+    console.log("dislay product")
     const availableProducts = await getAvailableProducts(db);
     res.json({ products: availableProducts });
   } catch (error) {
