@@ -137,8 +137,7 @@ app.get("/api", async (req, res) => {
   // const long = 121.0336896;
   const lat = 14.6909575;
   const long = 121.0890238;
-  // const apiKey = "AIzaSyBnv-QuZZ2EuiQYp4kV7MQkz7Y2UZ2dF50";
-  const apiKey = "AIzaSyDYHOubYKgfKBQxzUt_bk7vBZAF5qlOeVw";
+  const apiKey = process.env.MAP_API_KEY;
   const nearbyCafes = await getNearbyCafes(lat, long, 500, "cafe", apiKey);
   res.json({ nearbyCafe: nearbyCafes });
 });
