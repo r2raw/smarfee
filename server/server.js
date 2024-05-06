@@ -66,11 +66,11 @@ import updateUserEmail from "./MyServerFunctions/updateUserEmail.js";
 const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
-const port = 5000
+const port = env.process.PORT
 app.use(
   cors({
     credentials: true,
-    origin: ["https://smarfee-client.onrender.com/"],
+    origin: ["http://localhost:3000"],
   })
 );
 app.use(cookieParser());
