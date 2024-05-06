@@ -40,9 +40,6 @@ function FirstSection(props) {
 
     
     handleInputChange(e);
-    
-  // console.log(image && image[0].name)
-  // console.log(e.target.files[0].name)
   }
 
   useEffect(() => {
