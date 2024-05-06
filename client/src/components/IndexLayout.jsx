@@ -6,6 +6,7 @@ import axios from "axios";
 import MainLoader from "./Loader/MainLoader";
 function IndexLayout() {
   const [backendData, setBackendData] = useState();
+  const [userData, setUserData] = useState();
   const [uid, setUid] = useState("");
 
   useEffect(() => {
@@ -28,10 +29,7 @@ function IndexLayout() {
   const fetchData = async () => {
     try {
       const response = await axios.get(`/user-info/${uid}`);
-      setBackendData((prev) => ({
-        ...prev,
-        user_order: response.data.user_order,
-      }));
+      setUserData(response.data);
     } catch (error) {
       console.error("Error fetching user info:", error);
     }
@@ -41,7 +39,7 @@ function IndexLayout() {
     if (uid !== "") {
       fetchData();
     }else{
-      fetchProduct();
+      setUserData(null);
     }
   }, [uid]);
 
@@ -179,6 +177,7 @@ function IndexLayout() {
             handleDeleteOrder,
             uid,
             handleClearOrder,
+            userData,
           }}
         />
       </main>

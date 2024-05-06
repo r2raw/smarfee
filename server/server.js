@@ -57,6 +57,7 @@ import insertOrder from "./MyServerFunctions/Vendor/insertOrder.js";
 import fetchOrders from "./MyServerFunctions/Vendor/fetchOrders.js";
 import InsertOnlineOrder from "./MyServerFunctions/Customer/InsertOnlineOrder.js";
 import fetchUserOrder from "./MyServerFunctions/Customer/fetchUserOrder.js";
+import fetchUserData from "./MyServerFunctions/Customer/fetchUserData.js";
 const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -141,9 +142,9 @@ app.get("/user-info/:uid", async (req,res)=>{
   try {
     const {uid} = req.params;
     const user_order = await fetchUserOrder(db, uid)
-
+    const userData = await fetchUserData(db, uid);
     
-    return res.json({user_order: user_order})
+    return res.json({user_order: user_order, user_data: userData})
   } catch (error) {
     console.error("/user-info error: " + error.message)
   }
