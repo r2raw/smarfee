@@ -71,7 +71,7 @@ const port = process.env.PORT || 5000
 app.use(
   cors({
     // credentials: true,
-    origin: ["https://smarfee-client.vercel.app"],
+    origin: ["https://smarfee-client.vercel.app/"],
     methods: ["GET", "POST"]
   })
 );
