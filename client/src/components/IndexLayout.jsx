@@ -19,7 +19,7 @@ function IndexLayout() {
   const fetchProduct = async () => {
     try {
       axios
-        .get("/display-product")
+        .get("https://smarfee-cafeteria-server-dbdywdzv6-r2raws-projects.vercel.app/display-product")
         .then((res) => setBackendData(res.data))
         .catch((err) => console.error("display prod error: " + err.message));
     } catch (error) {
@@ -43,7 +43,7 @@ function IndexLayout() {
     }
   }, [uid]);
 
-  console.log(backendData);
+  console.log(backendData); 
   const [orders, setOrder] = useState([]);
 
   const handleOrders = (order) => {
