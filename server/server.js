@@ -123,11 +123,11 @@ const addOnsImage = multer({ storage: addOnsStorage });
 app.use(express.static("public"));
 
 const db = new pg.Client({
-  user: "postgres",
-  host: "localhost",
-  database: "smarfee",
-  password: "sAJFQf9e",
-  port: 5432,
+  user: process.env.POSTGRES_USER,
+  host:  process.env.POSTGRES_HOST,
+  database:  process.env.PG_DB,
+  password:  process.env.PG_PW,
+  port:  process.env.PG_PORT,
 });
 db.connect();
 
