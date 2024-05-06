@@ -123,16 +123,16 @@ const uploadStoreCreds = multer({ storage: storeCredentials });
 const addOnsImage = multer({ storage: addOnsStorage });
 app.use(express.static("public"));
 
-const db = new pg.Client({
-  user: process.env.POSTGRES_USER,
-  host:  process.env.POSTGRES_HOST,
-  database:  process.env.PG_DB,
-  password:  process.env.PG_PW,
-  port:  process.env.PG_PORT,
-});
-db.connect();
+// const db = new pg.Client({
+//   user: process.env.POSTGRES_USER,
+//   host:  process.env.POSTGRES_HOST,
+//   database:  process.env.PG_DB,
+//   password:  process.env.PG_PW,
+//   port:  process.env.PG_PORT,
+// });
+// db.connect();
 
-// const db = pool;
+const db = pool;
 
 const saltRounds = 16;
 
