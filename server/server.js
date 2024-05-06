@@ -764,7 +764,9 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
-
+app.use("/", (req,res)=>{
+  res.send("Server is up")
+})
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
