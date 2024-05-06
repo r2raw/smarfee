@@ -4,7 +4,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import axios from "axios";
 import requestIp from "request-ip";
-import getNearbyCafes from "../server/NearbyCafes.js";
+import getNearbyCafes from "./NearbyCafes.js";
 import multer from "multer";
 import path from "path";
 import http from "http";
