@@ -128,11 +128,15 @@ const db = new pg.Client({
   database: "smarfee",
   password: "sAJFQf9e",
   port: 5432,
-  ssl: {rejectUnauthorized:false}
+  ssl: false
 });
 db.connect();
 
 const saltRounds = 16;
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
 app.get("/api", async (req, res) => {
   // const lat = 14.6999457;
   // const long = 121.0336896;
@@ -768,6 +772,6 @@ function authenticateToken(req, res, next) {
 app.use("/", (req,res)=>{
   res.send("Server is up")
 })
-app.listen(port, () => {
+server.listen(port, () => {
   console.log("Server running on port " + port);
 });
