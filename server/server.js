@@ -49,6 +49,14 @@ import GetStoreEmail from "./MyServerFunctions/StoreRegistration/GetStoreEmail.j
 import fs from "fs";
 import DeactivateUser from "./MyServerFunctions/Admin/DeactivateUser.js";
 import RejectApplication from "./MyServerFunctions/Admin/RejectApplication.js";
+import checkExistingProductUpdate from "./MyServerFunctions/Vendor/checkExistingProductUpdate.js";
+import updateProdNoImg from "./MyServerFunctions/Vendor/updateProdNoImg.js";
+import updateProdWImg from "./MyServerFunctions/Vendor/updateProdWImg.js";
+import orderCount from "./MyServerFunctions/orderCount.js";
+import insertOrder from "./MyServerFunctions/Vendor/insertOrder.js";
+import fetchOrders from "./MyServerFunctions/Vendor/fetchOrders.js";
+import InsertOnlineOrder from "./MyServerFunctions/Customer/InsertOnlineOrder.js";
+import fetchUserOrder from "./MyServerFunctions/Customer/fetchUserOrder.js";
 const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -129,6 +137,18 @@ app.get("/api", async (req, res) => {
   res.json({ nearbyCafe: nearbyCafes });
 });
 
+app.get("/user-info/:uid", async (req,res)=>{
+  try {
+    const {uid} = req.params;
+    const user_order = await fetchUserOrder(db, uid)
+
+    
+    return res.json({user_order: user_order})
+  } catch (error) {
+    console.error("/user-info error: " + error.message)
+  }
+})
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -140,7 +160,7 @@ app.post("/login", async (req, res) => {
       const match = await bcrypt.compare(password, loginCred[0].password);
       if (match) {
         const userInfo = loginCred[0];
-        
+
         const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
         return res.json({
           status: "success",
@@ -172,22 +192,20 @@ app.get("/display-product", async (req, res) => {
   }
 });
 
-
-app.post("/deactivate-user/:userId", async (req,res)=>{
+app.post("/deactivate-user/:userId", async (req, res) => {
   try {
-    const {userId} = req.params;
+    const { userId } = req.params;
 
     const deactivated = await DeactivateUser(db, userId);
-    if(deactivated){
-      return res.json({status: "success"})
+    if (deactivated) {
+      return res.json({ status: "success" });
     }
 
-    return res.json({status: "failed"})
-
+    return res.json({ status: "failed" });
   } catch (error) {
     console.error("Deactivatin error: " + error.message);
   }
-})
+});
 
 app.post("/validate-store-registration", async (req, res) => {
   try {
@@ -234,8 +252,7 @@ app.post("/validate-store-registration", async (req, res) => {
     console.log("validate errpr: " + error.message);
   }
 });
-app.post(
-  "/store-registration",
+app.post("/store-registration",
   uploadStoreCreds.fields([
     { name: "storeImg", maxCount: 1 },
     { name: "dti", maxCount: 1 },
@@ -246,7 +263,6 @@ app.post(
   async (req, res) => {
     try {
       const userid = uid(16);
-      
 
       const imageFile = req.files["storeImg"][0];
       const pdfDti = req.files["dti"][0];
@@ -271,7 +287,7 @@ app.post(
       const today = dayjs(Date.now()).format("YYYY/MM/DD HH:mm:ss");
       const operatingDetails = await JSON.parse(operatingDetailsString);
 
-      console.log(operatingDetails)
+      console.log(operatingDetails);
       const vendorCount = await getVendorCount(db);
       const vendorId = PadZeroes(vendorCount + 1, 3);
       const registrationStore = await RegisterStore(
@@ -296,7 +312,7 @@ app.post(
         pdfDti,
         pdfClearance,
         pdfPermit,
-        validId,
+        validId
       );
       const storeOperation = await InsertStoreOperation(
         db,
@@ -325,16 +341,16 @@ app.get("/Admin/:uid", authenticateToken, async (req, res) => {
   });
 });
 
-app.get("/updateUsers", async (req, res)=>{
+app.get("/updateUsers", async (req, res) => {
   try {
     const users = await GetUser(db);
     res.json({
       userInfo: users,
     });
   } catch (error) {
-    console.error("updateUsers error: " + error.message)
+    console.error("updateUsers error: " + error.message);
   }
-})
+});
 
 app.get("/Vendor/:uid", authenticateToken, async (req, res) => {
   try {
@@ -345,13 +361,13 @@ app.get("/Vendor/:uid", authenticateToken, async (req, res) => {
     const vendorInfo = vendorResult.rows[0];
     const storeOpe = await GetStoreOperation(db, vendorInfo.store_id);
     const products = await getStoreProducts(db, vendorInfo.store_id);
-    const storeAddons = await getStoreAddOns(db, vendorInfo.store_id);
+    const orders = await fetchOrders(db, vendorInfo.store_id);
     if (vendorResult.rowCount > 0) {
       return res.json({
         vendor: vendorInfo,
         storeOpe: storeOpe,
         storeProducts: products,
-        addOns: storeAddons,
+        orders: orders,
       });
     }
   } catch (error) {
@@ -405,14 +421,13 @@ app.post("/Admin/Application-Decision", async (req, res) => {
 
 app.post("/Admin/Application-Reject/:storeId", async (req, res) => {
   try {
-    const {storeId} =req.params;
-    const {comment} = req.body;
-    const rejected = await RejectApplication(db, storeId,  comment)
+    const { storeId } = req.params;
+    const { comment } = req.body;
+    const rejected = await RejectApplication(db, storeId, comment);
 
-    if(rejected){
-      return res.json({status: "success"})
+    if (rejected) {
+      return res.json({ status: "success" });
     }
-
   } catch (error) {
     console.error("Admin Application error: " + error.message);
   }
@@ -540,9 +555,61 @@ app.post("/validateProduct", async (req, res) => {
 
 app.post("/validateProductUpdate", async (req, res) => {
   try {
-    console.log(req.body);
+    const { storeId, name, size, availability, prod_id } = req.body;
+    const trimmedName = _.join(_.split(name, " "), "").toLowerCase();
+    const productExist = await checkExistingProductUpdate(
+      db,
+      storeId,
+      trimmedName,
+      size,
+      prod_id
+    );
+
+    if (!productExist) {
+      return res.json({ status: "success" });
+    }
+    return res.json({ status: "invalid", errmessage: "Existing Product!" });
   } catch (error) {
     console.error("validate update product error: " + error.message);
+  }
+});
+app.post(
+  "/uploadUpdateProductImg",
+  productImage.single("productImg"),
+  async (req, res) => {
+    try {
+      const { storeId, category } = req.body;
+
+      const updateProduct = await updateProdWImg(
+        db,
+        req.body,
+        req.file.filename
+      );
+      if (updateProduct) {
+        return res.json({ status: "success" });
+      }
+    } catch (error) {
+      console.error("uploadProduct error: " + error.message);
+    }
+  }
+);
+
+app.post("/uploadUpdateProduct", async (req, res) => {
+  try {
+    const { category, storeId } = req.body;
+
+    const updateResult = await updateProdNoImg(db, req.body);
+
+    if (updateResult) {
+      return res.json({ status: "success" });
+    }
+
+    console.log("not success");
+    // if (insertProduct.rowCount > 0) {
+    //   return res.json({ status: "success" });
+    // }
+  } catch (error) {
+    console.error("uploadProduct error: " + error.message);
   }
 });
 app.post(
@@ -559,6 +626,7 @@ app.post(
         3
       )}`;
 
+      console.log(productCode);
       const insertProduct = await addStoreProduct(
         db,
         req.body,
@@ -575,6 +643,64 @@ app.post(
   }
 );
 
+app.post("/POSPayment", async (req, res) => {
+  try {
+    console.log(req.body);
+
+    const { items, amountToPay, change, enteredAmount, service_type } = req.body;
+    const orderNumber = await orderCount(db);
+    const order_number = PadZeroes(parseInt(orderNumber) + 1, 8);
+
+    let completed = true;
+    for (let i = 0; i < items.length; i++) {
+      const inserted = await insertOrder(
+        db,
+        items[i].storeid,
+        items[i].id,
+        order_number,
+        items[i].quantity,
+        items[i].totalPrice,
+        enteredAmount,
+        change,
+        service_type
+      );
+      if (!inserted) {
+        completed = false;
+      }
+    }
+
+    if (completed) {
+      return res.json({ status: "success" });
+    }
+  } catch (error) {
+    console.error("/POSTPayment error: " + error.message);
+  }
+});
+
+app.post("/Online-order/:uid", async (req, res) => {
+  try {
+    const { uid } = req.params;
+  
+    const {items, service_type} = req.body;
+    const orderNumber = await orderCount(db);
+    const order_number = PadZeroes(parseInt(orderNumber) + 1, 8);
+    
+    let completed = true;
+    for(let i = 0;i < items.length; i++){
+      const insertResult = await InsertOnlineOrder(db, items[i].storeId, items[i].productId, uid, order_number, items[i].quantity, items[i].computedPrice, service_type);
+
+      if(!insertResult){
+        completed = false;
+      }
+    }
+
+    if(completed){
+      return res.json({status: 'success'})
+    }
+  } catch (error) {
+    console.error('/Online-order/ error: ' + error.message)
+  }
+});
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];

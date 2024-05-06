@@ -9,7 +9,7 @@ import CloseSharpIcon from "@mui/icons-material/CloseSharp";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import UserRegistration from "./UserRegistration";
-import _ from "lodash"
+import _ from "lodash";
 import ProductSearch from "./ProductSearch";
 
 function Header(props) {
@@ -22,7 +22,7 @@ function Header(props) {
   const [uid, setUid] = useState("");
   const [role, setRole] = useState();
   const [uIconDD, setUIconDD] = useState(false);
-  const [search, setSearch] = useState()
+  const [search, setSearch] = useState();
   const [filteredProduct, setFilteredProducts] = useState();
 
   const [accessToken, setAccessToken] = useState("");
@@ -31,15 +31,15 @@ function Header(props) {
       const storedAccessToken = localStorage.getItem("accessToken");
       const uid = localStorage.getItem("uid");
       const role = localStorage.getItem("role");
-      
+
       if (uid) {
         setUid(uid);
       }
       if (storedAccessToken) {
         setAccessToken(storedAccessToken);
       }
-      if(role){
-        setRole(role)
+      if (role) {
+        setRole(role);
       }
     };
 
@@ -50,7 +50,7 @@ function Header(props) {
     setLoginForm(true);
   };
 
-  const handleLogin = ()=>{
+  const handleLogin = () => {
     const fetchAccessToken = () => {
       const storedAccessToken = localStorage.getItem("accessToken");
       const getUid = localStorage.getItem("uid");
@@ -60,58 +60,67 @@ function Header(props) {
       if (storedAccessToken) {
         setAccessToken(storedAccessToken);
       }
-
     };
 
     fetchAccessToken();
-  }
+  };
 
-  useEffect(()=>{
-    if(role){
-      if(role !== "Customer"){
-        navigate(`${role}/Dashboard`)
+  useEffect(() => {
+    if (role) {
+      if (role !== "Customer") {
+        navigate(`${role}/Dashboard`);
       }
     }
-  },[role])
+  }, [role]);
 
-  useEffect(()=>{
-    props.getUid(uid)
-  },[uid])
+  useEffect(() => {
+    props.getUid(uid);
+  }, [uid]);
   const handleLogout = () => {
     localStorage.setItem("accessToken", "");
     localStorage.setItem("uid", "");
     localStorage.setItem("role", "");
     setUid("");
-    setAccessToken("")
+    setAccessToken("");
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  const handleSearching = (e)=>{
+  const handleSearching = (e) => {
     const search = e.target.value;
-    setSearch(search)
-  }
-  
-  useEffect(()=>{
-    if(search !== ""){
-      const filter = props.products.filter(i => _.lowerCase(i.productname) === _.lowerCase(search) || _.lowerCase(i.productname).includes(_.lowerCase(search)));
-      console.log(filter)
-      setFilteredProducts(filter)
+    setSearch(search);
+  };
+
+  useEffect(() => {
+    if (search !== "") {
+      const filter = props.products.filter(
+        (i) =>
+          _.lowerCase(i.productname) === _.lowerCase(search) ||
+          _.lowerCase(i.productname).includes(_.lowerCase(search))
+      );
+      console.log(filter);
+      setFilteredProducts(filter);
       return;
     }
     setFilteredProducts("");
-  },[search])
+  }, [search]);
 
-  console.log(props.products)
+  console.log(props.products);
   return (
     <header className="client-header">
       <Link to="/">
         <h1>SMARFEE</h1>
       </Link>
       <div className="input-group search">
-        <input type="search" className="primary" placeholder=" " onChange={handleSearching} value={search} />
+        <input
+          type="search"
+          className="primary"
+          placeholder=" "
+          onChange={handleSearching}
+          value={search}
+        />
         <span className="floating-label">Search</span>
         <span className="input-icon">
           <SearchSharpIcon />
@@ -132,7 +141,7 @@ function Header(props) {
         <li>
           <NavLink to="/Plate">
             <RestaurantMenuSharpIcon sx={{ fontSize: 40 }} />
-              <div id="plate-number">{props.order.length}</div>
+            <div id="plate-number">{props.order.length}</div>
           </NavLink>
         </li>
         <li>
@@ -149,7 +158,9 @@ function Header(props) {
             <AccountCircleSharpIcon sx={{ fontSize: 40 }} />
             {uIconDD && (
               <div className="user-icon-modal">
-                <p>Account</p>
+                <Link to="Account">
+                  <p>Account</p>
+                </Link>
                 <p onClick={handleLogout}>Logout</p>
               </div>
             )}

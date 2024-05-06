@@ -7,6 +7,7 @@ import PendingFirstSection from "./Pending/PendingFirstSection";
 import PendingSecondSection from "./Pending/PendingSecondSection";
 import MainLoader from "../Loader/MainLoader";
 import StoreProducts from "./StoreProducts/StoreProducts";
+import Rejected from "./Rejected/Rejected";
 function StoreLayout() {
   const [backendData, setBackendData] = useState();
   const [accessToken, setAccessToken] = useState(""); // State to store the access token
@@ -63,16 +64,19 @@ function StoreLayout() {
   }, [accessToken]);
 
   const renewProduct = () => {
-    axios.get(`/renewProduct/${backendData.vendor.store_id}`).then((res) => {
-      console.log(res.status);
-      if (res.data.status === "success") {
-        setBackendData((prev) => ({
-          ...prev,
-          storeProducts: res.data.storeProducts,
-        }));
-        return;
-      }
-    }).catch(err => console.error("renew product error: " + err.message));
+    axios
+      .get(`/renewProduct/${backendData.vendor.store_id}`)
+      .then((res) => {
+        console.log(res.status);
+        if (res.data.status === "success") {
+          setBackendData((prev) => ({
+            ...prev,
+            storeProducts: res.data.storeProducts,
+          }));
+          return;
+        }
+      })
+      .catch((err) => console.error("renew product error: " + err.message));
   };
   if (!backendData) return <MainLoader />;
   if (backendData.vendor.approval_status === "Pending")
@@ -106,6 +110,8 @@ function StoreLayout() {
         </main>
       </article>
     );
+
+  if (backendData.vendor.approval_status === "Rejected") return <Rejected />;
   return (
     <article>
       <StoreLayoutHeader />

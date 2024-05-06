@@ -8,7 +8,6 @@ function IndexLayout() {
   const [backendData, setBackendData] = useState();
   const [uid, setUid] = useState("");
 
-  console.log(backendData)
   useEffect(() => {
     axios
       .get("/display-product")
@@ -16,11 +15,51 @@ function IndexLayout() {
       .catch((err) => console.error("display prod error: " + err.message));
   }, []);
 
+  const fetchProduct = async () => {
+    try {
+      axios
+        .get("/display-product")
+        .then((res) => setBackendData(res.data))
+        .catch((err) => console.error("display prod error: " + err.message));
+    } catch (error) {
+      console.error("fetchProductError: " + error.message);
+    }
+  };
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`/user-info/${uid}`);
+      setBackendData((prev) => ({
+        ...prev,
+        user_order: response.data.user_order,
+      }));
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (uid !== "") {
+      fetchData();
+    }else{
+      fetchProduct();
+    }
+  }, [uid]);
+
+  console.log(backendData);
   const [orders, setOrder] = useState([]);
 
   const handleOrders = (order) => {
-    const { name, productname, id, storeid, productcode, productprice } = order.menu;
-    
+    const {
+      name,
+      productname,
+      id,
+      storeid,
+      productcode,
+      productprice,
+      category,
+      size,
+    } = order.menu;
+
     const findOrderIndex = orders.findIndex(
       (order) => order.storeId === storeid && order.productCode === productcode
     );
@@ -30,7 +69,9 @@ function IndexLayout() {
         updatedOrders[findOrderIndex] = {
           ...updatedOrders[findOrderIndex],
           quantity: updatedOrders[findOrderIndex].quantity + 1,
-          computedPrice: parseFloat(updatedOrders[findOrderIndex].computedPrice) + parseFloat(productprice),
+          computedPrice:
+            parseFloat(updatedOrders[findOrderIndex].computedPrice) +
+            parseFloat(productprice),
         };
         return updatedOrders;
       });
@@ -41,6 +82,8 @@ function IndexLayout() {
           storeName: name,
           productName: productname,
           price: productprice,
+          category: category,
+          size: size,
           computedPrice: productprice,
           quantity: 1,
           productId: id,
@@ -53,11 +96,11 @@ function IndexLayout() {
 
   const handleMinusOrders = (order) => {
     const { storeId, productCode } = order;
-  
+
     const findOrderIndex = orders.findIndex(
       (order) => order.storeId === storeId && order.productCode === productCode
     );
-  
+
     if (findOrderIndex !== -1) {
       setOrder((prevOrders) => {
         const updatedOrders = [...prevOrders];
@@ -77,7 +120,6 @@ function IndexLayout() {
     }
   };
 
-  
   const handlePlusOrder = (order) => {
     const { storeId, productCode } = order;
     const findOrderIndex = orders.findIndex(
@@ -88,22 +130,23 @@ function IndexLayout() {
       setOrder((prevOrders) => {
         const updatedOrders = [...prevOrders];
         const updatedOrder = { ...updatedOrders[findOrderIndex] };
-          updatedOrder.quantity += 1;
-          updatedOrder.computedPrice = parseFloat(updatedOrder.computedPrice) + parseFloat(updatedOrder.price);
-          updatedOrders[findOrderIndex] = updatedOrder;
-        
+        updatedOrder.quantity += 1;
+        updatedOrder.computedPrice =
+          parseFloat(updatedOrder.computedPrice) +
+          parseFloat(updatedOrder.price);
+        updatedOrders[findOrderIndex] = updatedOrder;
+
         return updatedOrders;
       });
     }
   };
-  
+
   const handleDeleteOrder = (order) => {
-    
     const { storeId, productCode } = order;
     const findOrderIndex = orders.findIndex(
       (order) => order.storeId === storeId && order.productCode === productCode
     );
-  
+
     if (findOrderIndex !== -1) {
       // Remove the order from the array
       setOrder((prevOrders) => {
@@ -114,15 +157,30 @@ function IndexLayout() {
     }
   };
 
-  const getUid = (uid)=>{
-    setUid(uid)
-  }
+  const handleClearOrder = () => {
+    setOrder([]);
+  };
+
+  const getUid = (uid) => {
+    setUid(uid);
+  };
   if (!backendData) return <MainLoader />;
   return (
     <div className="container">
       <Header order={orders} getUid={getUid} products={backendData.products} />
       <main>
-        <Outlet context={{ backendData, orders, handleOrders, handleMinusOrders, handlePlusOrder, handleDeleteOrder, uid }} />
+        <Outlet
+          context={{
+            backendData,
+            orders,
+            handleOrders,
+            handleMinusOrders,
+            handlePlusOrder,
+            handleDeleteOrder,
+            uid,
+            handleClearOrder,
+          }}
+        />
       </main>
       <Footer />
     </div>

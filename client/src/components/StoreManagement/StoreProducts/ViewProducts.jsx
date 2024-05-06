@@ -1,6 +1,10 @@
-
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 import UploadSharpIcon from "@mui/icons-material/UploadSharp";
 import _ from "lodash";
@@ -10,7 +14,7 @@ import Successful from "../../FormSubmission/Successful";
 import Loader from "../../Loader/Loader";
 function ViewProducts() {
   const navigate = useNavigate();
-  const {code} = useParams()
+  const { code } = useParams();
   const { backendData, renewProduct } = useOutletContext();
   const [preview, setPreview] = useState();
   const [image, setImage] = useState();
@@ -20,45 +24,34 @@ function ViewProducts() {
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState();
   const [values, setValues] = useState({
-    storeId: backendData.vendor.store_id,
+    storeId: "",
     name: "",
     price: "",
     category: "",
     type: "",
     size: "",
+    availability: "",
   });
 
+  useEffect(() => {
+    const findProduct = backendData.storeProducts.find(
+      (i) => i.productcode === code
+    );
 
-  console.log(backendData)
-  useEffect(()=>{
-    const findProduct = backendData.storeProducts.find(i => i.productcode === code)
-
-    if (findProduct){
-        setProduct(findProduct)
-        setValues(prev => ({
-            ...prev,
-            name: titleCase(_.lowerCase(findProduct.productname)),
-            price: findProduct.productprice,
-            category: findProduct.category,
-            type: findProduct.type,
-            size: findProduct.size
-        }))
+    if (findProduct) {
+      setProduct(findProduct);
+      setValues((prev) => ({
+        ...prev,
+        storeId: findProduct.storeid,
+        name: titleCase(_.lowerCase(findProduct.productname)),
+        price: findProduct.productprice,
+        category: findProduct.category,
+        type: findProduct.type,
+        size: findProduct.size,
+        availability: findProduct.availability,
+      }));
     }
-  },[])
-  const upload = useCallback((e) => {
-    let formdata = new FormData(e.target);
-    formdata.append("storeId", backendData.vendor.store_id);
-    axios
-      .post("/uploadProduct", formdata)
-      .then((res) => {
-        if (res.data.status === "success") {
-          renewProduct();
-          setSuccessful(true);
-        }
-      })
-      .catch((err) => console.error("ProductUpload ERROR: " + err.message));
-  }, []);
-
+  }, [backendData.storeProducts]);
   function handleFileChange(e) {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files;
@@ -88,7 +81,6 @@ function ViewProducts() {
 
   const handleInputChange = (e) => {
     const { value, name } = e.target;
-
     setValues((prev) => ({
       ...prev,
       [name]: value,
@@ -156,26 +148,74 @@ function ViewProducts() {
       }
     }
     setDisabled(!valid);
-  }, [values, image]);
+  }, [values]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault(e);
-    setLoading(true);
-    axios
-      .post("/validateProductUpdate", {value: values, origName: product.productname})
-      .then((res) => {
-        setLoading(false);
-        // if (res.data.status === "success") {
-        //   upload(e);
-        //   return;
-        // }
-        // setErrMessage(res.data.errmessage);
-      })
-      .catch((err) => console.error("validateProduct error" + err.message));
+  const upload = useCallback(
+    (e) => {
+      let formdata = new FormData(e.target);
+      formdata.append("productId", product.id);
+      axios
+        .post("/uploadUpdateProductImg", formdata)
+        .then((res) => {
+          if (res.data.status === "success") {
+            setLoading(false);
+            renewProduct();
+            setSuccessful(true);
+          }
+        })
+        .catch((err) => console.error("ProductUpload ERROR: " + err.message));
+    },
+    [values]
+  );
+
+  const noimg = useCallback(() => {
+    if (product.id) {
+      axios
+        .post("/uploadUpdateProduct", {
+          ...values,
+          productId: product.id,
+          origCateg: product.category,
+          origCode: product.productcpde,
+        })
+        .then((res) => {
+          setLoading(false);
+          if (res.data.status === "success") {
+            renewProduct();
+            setSuccessful(true);
+          }
+        })
+        .catch((err) => console.error("ProductUpload ERROR: " + err.message));
+    }
+  }, [values]);
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault(e);
+      setLoading(true);
+      const response = await axios.post("/validateProductUpdate", {
+        ...values,
+        prod_id: product.id,
+      });
+
+      if (response.data.status === "success") {
+        if (!image) {
+          noimg();
+          return;
+        }
+
+        console.log("with img");
+        upload(e);
+        return;
+      }
+
+      setLoading(false);
+      return setErrMessage(response.data.errmessage);
+    } catch (error) {
+      console.error("validateProduct error:  " + error.message);
+    }
   };
-
-  if(!product) return <Loader />
-  if (succesful) return <Successful message="Product added successfully!" />;
+  if (!product) return <Loader />;
+  if (succesful) return <Successful message="Product updated successfully!" />;
   return (
     <div className="add-product">
       <Link to="../Products">
@@ -188,13 +228,15 @@ function ViewProducts() {
         <div className="product-info">
           <div>
             <div className="img-container">
-              {preview &&
-                image ?
+              {preview && image ? (
                 preview.map((pic) => {
                   return <img className="empl-img" src={pic} alt="img" />;
-                }) : 
-                <img src={`http://localhost:5000/storeProducts/${product.productimg}`} />
-                }
+                })
+              ) : (
+                <img
+                  src={`http://localhost:5000/storeProducts/${product.productimg}`}
+                />
+              )}
             </div>
             <input
               type="file"
@@ -202,7 +244,6 @@ function ViewProducts() {
               name="productImg"
               onChange={handleFileChange}
               accept="image/png, image/jpeg"
-              required
             />
             <label className="upload-label" htmlFor="product-img">
               <UploadSharpIcon /> Upload
@@ -272,6 +313,28 @@ function ViewProducts() {
                 <option>Medium</option>
                 <option>Large</option>
               </select>
+            </div>
+            <div className="rdbtn">
+              <input
+                type="radio"
+                value="Available"
+                name="availability"
+                onChange={handleInputChange}
+                checked={values.availability === "Available"}
+                required
+                id="prod-available"
+              />
+              <label htmlFor="prod-available">Available</label>
+              <input
+                type="radio"
+                value="Unavailable"
+                name="availability"
+                onChange={handleInputChange}
+                checked={values.availability === "Unavailable"}
+                required
+                id="prod-unavailable"
+              />
+              <label htmlFor="prod-unavailable">Unvailable</label>
             </div>
           </div>
         </div>

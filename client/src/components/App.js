@@ -36,6 +36,7 @@ import DeactivatedHeader from "./Deactivated/DeactivatedHeader";
 import DeactivatedUserLayout from "./Deactivated/DeactivatedUserLayout";
 import PointOfSale from "./StoreManagement/POS/PointOfSale";
 import Discounts from "./StoreManagement/Discounts/Discounts";
+import VendorAccount from "./StoreManagement/VendorAccount/VendorAccount";
 
 // const router = createBrowserRouter(
 //   createRoutesFromElements(
@@ -68,10 +69,12 @@ function App() {
       <Route path="/Vendor" element={<StoreLayout />}>
         <Route path="Dashboard" element={<OwnerDashboard />} />
         <Route path="Info" element={<StoreInfo />} />
+        <Route path="Account" element={<VendorAccount />} />
         <Route path="Products" element={<StoreProducts />} />
         <Route path="Products/Add-Product" element={<StoreAddProduct />} />
         <Route path="Products/Add-Addons" element={<StoreAddAddons />} />
         <Route path="Products/View-Product/:code" element={<ViewProducts />} />
+        
         <Route path="Orders" element={<StoreOrders />} />
         <Route path="POS" element={<PointOfSale />} />
         <Route path="Discounts" element={<Discounts />} />

@@ -16,6 +16,7 @@ export default async (db, data, img, code) => {
       code,
     ]);
 
+
     if(result.rowCount > 0){
         return result;
     }

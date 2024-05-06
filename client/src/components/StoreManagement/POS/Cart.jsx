@@ -4,7 +4,16 @@ import EnterAmount from "./EnterAmount";
 function Cart(props) {
   const { orderedItems } = props;
   const [openAmount, setOpenAmount] = useState(false);
+
+  const [success, setSuccess] = useState(false);
+  const [serviceType, setServiceType] = useState("");
   const [total, setTotal] = useState();
+
+  const handleCheckChange = (e) => {
+    const { value } = e.target;
+
+    setServiceType(value);
+  };
   useEffect(() => {
     if (orderedItems) {
       setTotal(
@@ -16,11 +25,24 @@ function Cart(props) {
     }
   }, [orderedItems]);
 
-  const handleAmountPayment = () => {
-    setOpenAmount(!openAmount);
+  const handleAmountPayment = (result) => {
+    setOpenAmount(result);
   };
 
-  console.log(orderedItems.length)
+  useEffect(() => {
+    if (success) {
+      setTimeout(() => {
+        setSuccess(false);
+      }, 3000);
+    }
+  }, [success]);
+
+  const handleSuccesspayment = () => {
+    setSuccess(true);
+    props.handleClearOrder();
+  };
+
+  console.log(orderedItems.length);
   return (
     <div className="cart">
       <h1 style={{ textAlign: "center" }}>Order list</h1>
@@ -44,7 +66,36 @@ function Cart(props) {
           })}
       </div>
       <div className="summary">
+        {success && (
+          <p
+            style={{
+              width: "100%",
+              textAlign: "center",
+              backgroundColor: "#8DECB4",
+            }}
+          >
+            Payment successful
+          </p>
+        )}
         <p>Total: {total && total.toFixed(2)}</p>
+        <div className="rdbtn">
+          <input
+            type="radio"
+            name="service_type"
+            value='Dine in'
+            id="dine-in"
+            onChange={handleCheckChange}
+          />
+          <label htmlFor="dine-in">Dine in</label>
+          <input
+            type="radio"
+            name="service_type"
+            value='Take out'
+            id="take-out"
+            onChange={handleCheckChange}
+          />
+          <label htmlFor="take-out">Take out</label>
+        </div>
         <div className="btns">
           <button
             onClick={() => {
@@ -54,12 +105,26 @@ function Cart(props) {
           >
             Clear
           </button>
-          <button onClick={handleAmountPayment} disabled={orderedItems.length > 0 ? false : true} className="solid primary fade">
+          <button
+            onClick={() => {
+              handleAmountPayment(true);
+            }}
+            disabled={serviceType === "" || orderedItems.length === 0}
+            className="solid primary fade"
+          >
             Pay
           </button>
         </div>
       </div>
-      {openAmount && <EnterAmount handleAmountPayment={handleAmountPayment} total={total} />}
+      {openAmount && (
+        <EnterAmount
+          serviceType={serviceType}
+          handleSuccesspayment={handleSuccesspayment}
+          handleAmountPayment={handleAmountPayment}
+          orderedItems={orderedItems}
+          total={total}
+        />
+      )}
     </div>
   );
 }

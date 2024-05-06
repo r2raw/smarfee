@@ -7,6 +7,7 @@
   --color-secondary: rgba(180, 132, 108);
   --color-tertiary: rgba(181, 134, 111);
   --color-brown-4: rgb(167, 131, 113);
+  --color-blue: rgb(105, 113, 186);
   --color-white: #fff;
   --color-graye: #d9d9d9;
   --color-gray-2: rgb(217, 217, 217);
@@ -761,6 +762,28 @@ button.tertiary::before {
 button.primary.solid.fade::before {
   display: none !important;
 }
+button.blue.solid.fade::before {
+  display: none !important;
+}
+
+button.blue.solid.fade:hover{
+  background-color:  rgb(123, 130, 190)!important ;
+  color: var(--color-white) !important;
+  border-color: rgb(123, 130, 190)!important ;
+  border-color: rgb(123, 130, 190)!important;
+}
+
+
+
+button.blue.solid.fade{
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  border: 1px solid var(--color-blue);
+  background-color:  var(--color-blue)!important ;
+  color: var(--color-white) !important;
+  border-color: var(--color-blue)!important ;
+}
 
 button.primary.solid.fade:hover {
   background-color: #854b38 !important ;
@@ -999,7 +1022,44 @@ section.container {
   padding: 0;
   margin-top: 100px;
 }
+section.container.user-account {
+  display: grid;
+  padding: 5%;
+  gap: 20px;
+  grid-template-columns: 1fr 1fr;
+}
 
+section.container.user-account .img-container{
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+}
+
+section.container.user-account .img-container img{
+  border-radius: 50%;
+}
+
+section.container.user-account > form:first-child{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+section.container.user-account > form:first-child button{
+  width: 100%;
+  border-radius: 5px;
+}
+section.container.user-account > form:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+section.container.user-account > form:last-child button{
+  width: 100%;
+  border-radius: 5px;
+}
 /* *******************MENU LIST**************************** */
 
 .list-container {
@@ -1141,11 +1201,102 @@ input[type="radio"]:is(.menu-header):checked + label {
   padding: 3% 5% 0;
   justify-content: center;
 }
+
+.my-plate .proceed-order{
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  right: 0;
+  padding: 5%;
+  z-index: 100;
+  top: 0;
+  width: 100%;
+  height: 100dvh;
+  background-color: #00000040;
+}
+
+.my-plate .proceed-order .order-confirmation{
+  position: relative;
+  border-radius: 10px;
+  box-shadow: var(--card-box-shadow);
+  width: 400px;
+  /* height: 80dvh; */
+  padding: 10px;
+  background-color: var(--color-white);
+}
+
+.my-plate .proceed-order .order-confirmation .close-btn{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.my-plate .proceed-order .order-confirmation .close-btn:hover{
+  background-color: #00000010;
+}
+
+.my-plate .proceed-order .order-confirmation .order-items{
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.my-plate .proceed-order .order-confirmation .order-items .order-item{
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  border-bottom: 1px solid var(--color-tertiary);
+  align-items: center;
+  padding: 10px;
+}
+
+.my-plate .proceed-order .order-confirmation .order-items .order-item:last-child{
+  border: none;
+}
 .view-search-product.container {
   display: flex;
   margin-top: 100px;
   padding: 5% 7%;
   gap: 20px;
+}
+.my-plate .proceed-order .order-confirmation .rdbs{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.my-plate .proceed-order .order-confirmation .confirmation{
+  box-shadow: var(--card-top-shadow);
+  padding: 10px;
+}
+.my-plate .proceed-order .order-confirmation .rdbs input[type='radio']{
+  display: none;
+
+}
+.my-plate .proceed-order .order-confirmation .rdbs input[type='radio'] + label{
+  border: 1px solid var(--color-tertiary);
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.my-plate .proceed-order .order-confirmation .rdbs input[type='radio']:checked + label{
+  background-color: var(--color-tertiary);
+  color: white;
+}
+
+.my-plate .proceed-order .order-confirmation button{
+  width: 100%;
+  border-radius: 10px;
 }
 
 .view-search-product.container img {
@@ -1950,6 +2101,23 @@ article main div > *:last-child {
   padding-left: 40px;
 }
 
+.table-container .pagination{
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.table-container .pagination .pagination-arrow{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.table-container .pagination >div:last-child{
+  display: flex;
+  align-items: center;
+}
+
 .table-container .input-group {
   width: 30%;
 }
@@ -2196,6 +2364,35 @@ article main div > *:last-child {
   padding: 3%;
   grid-template-columns: 1fr 2fr;
   gap: 20px;
+}
+:is(.add-product) .product-info .rdbtn {
+  display: flex;
+  gap: 10px;
+}
+
+:is(.add-product) .product-info .rdbtn input[type='radio'] {
+  display: none;
+}
+
+:is(.add-product) .product-info .rdbtn input[type='radio']:is(#prod-available) + label {
+  border: 1px solid var(--color-tertiary);
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+:is(.add-product) .product-info .rdbtn input[type='radio']:is(#prod-available):checked + label {
+  background-color: var(--color-tertiary);
+  color: white;
+}
+:is(.add-product) .product-info .rdbtn input[type='radio']:is(#prod-unavailable):checked + label {
+  background-color: var(---color-danger);
+  color: white;
+}
+:is(.add-product) .product-info .rdbtn input[type='radio']:is(#prod-unavailable) + label {
+  border: 1px solid var(---color-danger);
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 :is(.add-addons, .add-product) .product-info .product-info-second {
@@ -2613,6 +2810,28 @@ main.deactivated-user > div button {
   box-shadow: var(--smooth-shadow-whitebg);
   width: 100%;
   padding: 10px;
+}
+.point-of-sale > .cart .summary .rdbtn{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-block: 10px;
+}
+
+.point-of-sale > .cart .summary .rdbtn input[type='radio']{
+  display: none;
+}
+.point-of-sale > .cart .summary .rdbtn input[type='radio'] + label{
+  border: 1px solid var(--color-tertiary);
+  padding: 5px 10px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.point-of-sale > .cart .summary .rdbtn input[type='radio']:checked + label{
+  background-color: var(--color-tertiary);
+  color: var(--color-white);
 }
 
 .point-of-sale > .cart .summary .btns {

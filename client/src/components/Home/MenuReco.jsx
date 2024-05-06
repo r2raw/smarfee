@@ -3,7 +3,7 @@ import MenuCard from "./MenuCard";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import ArrowForwardSharpIcon from "@mui/icons-material/ArrowForwardSharp";
-function MenuReco() {
+function MenuReco(props) {
   var settings = {
     dots: true,
     infinite: true,
@@ -43,7 +43,7 @@ function MenuReco() {
   return (
     <div className="menu-reco">
       <Slider {...settings}>
-        {sampleMenu.map((i, index) => {
+        {props.timelyThreats.map((i, index) => {
           return (
             <div  key={index} className="slider-item">
               <MenuCard menu={i} />
