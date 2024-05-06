@@ -65,7 +65,7 @@ import insertUserProfile from "./MyServerFunctions/Customer/insertUserProfile.js
 import updateUserEmail from "./MyServerFunctions/updateUserEmail.js";
 import pool from "./database.js";
 const app = express();
-const server = http.createServer(app);
+// const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 5000
 app.use(
@@ -111,12 +111,12 @@ const addOnsStorage = multer.diskStorage({
   },
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: "https://smarfee-client.vercel.app",
-    methods: ["GET", "POST"],
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: "https://smarfee-client.vercel.app",
+//     methods: ["GET", "POST"],
+//   },
+// });
 const productImage = multer({ storage: storeProductStorage });
 const vendorImage = multer({ storage: vendorImageStorage });
 const uploadStoreCreds = multer({ storage: storeCredentials });
@@ -775,6 +775,6 @@ function authenticateToken(req, res, next) {
 app.use("/", (req,res)=>{
   res.send("Server is up")
 })
-server.listen(port, () => {
+app.listen(port, () => {
   console.log("Server running on port " + port);
 });
