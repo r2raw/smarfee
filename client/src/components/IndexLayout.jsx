@@ -11,7 +11,7 @@ function IndexLayout() {
 
   useEffect(() => {
     axios
-      .get(`https://smarfee-cafeteria-server.vercel.app/display-product`)
+      .get(`/display-product`)
       .then((res) => setBackendData(res.data))
       .catch((err) => console.error("display prod error: " + err.message));
   }, []);

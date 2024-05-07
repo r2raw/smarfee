@@ -1,6 +1,7 @@
 {
   "name": "client",
   "version": "0.1.0",
+  "proxy": "https://smarfee-cafeteria-server.vercel.app",
   "homepage": "https://smarfee-client.vercel.app/",
   "private": true,
   "dependencies": {
