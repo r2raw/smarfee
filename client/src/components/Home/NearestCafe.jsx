@@ -14,7 +14,7 @@ function NearestCafe() {
   };
   useEffect(() => {
     axios
-      .get("/api")
+      .get("https://smarfee.vercel.app/api")
       .then((response) => {
         setBackendData(response.data);
       })

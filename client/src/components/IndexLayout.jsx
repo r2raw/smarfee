@@ -19,7 +19,7 @@ function IndexLayout() {
   const fetchProduct = async () => {
     try {
       axios
-        .get("/display-product")
+        .get("https://smarfee.vercel.app/display-product")
         .then((res) => setBackendData(res.data))
         .catch((err) => console.error("display prod error: " + err.message));
     } catch (error) {
