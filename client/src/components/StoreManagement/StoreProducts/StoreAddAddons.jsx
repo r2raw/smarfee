@@ -25,7 +25,7 @@ function StoreAddAddons() {
 
     const formData = new FormData(e.target);
     formData.append("storeId", backendData.vendor.store_id)
-    axios.post("/insert-addons", formData).then(res => {
+    axios.post("https://smarfee.vercel.app/insert-addons", formData).then(res => {
       if(res.data.status === "success"){
         setSuccessful(true);
         return;

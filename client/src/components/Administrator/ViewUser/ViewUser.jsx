@@ -19,7 +19,7 @@ function ViewUser() {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`/Admin/Accounts/${userId}`)
+      .get(`https://smarfee.vercel.app/Admin/Accounts/${userId}`)
       .then((res) => {
         setUserData(res.data.userinfo);
       })
@@ -43,7 +43,7 @@ function ViewUser() {
   useEffect(() => {
     if (confirmed) {
       setLoading(true);
-      axios.post(`/deactivate-user/${userId}`).then((res) => {
+      axios.post(`https://smarfee.vercel.app/deactivate-user/${userId}`).then((res) => {
         setLoading(false);
         if (res.data.status === "success") {
           updateuUserAccount();

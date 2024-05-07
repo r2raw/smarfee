@@ -48,7 +48,7 @@ function StoreLayout() {
   useEffect(() => {
     if (accessToken) {
       axios
-        .get(`/Vendor/${uid}`, {
+        .get(`https://smarfee.vercel.app/Vendor/${uid}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -65,7 +65,7 @@ function StoreLayout() {
 
   const renewProduct = () => {
     axios
-      .get(`/renewProduct/${backendData.vendor.store_id}`)
+      .get(`https://smarfee.vercel.app/renewProduct/${backendData.vendor.store_id}`)
       .then((res) => {
         console.log(res.status);
         if (res.data.status === "success") {

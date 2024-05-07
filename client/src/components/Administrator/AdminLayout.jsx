@@ -45,7 +45,7 @@ function AdminLayout() {
   useEffect(() => {
     if (accessToken) {
       axios
-        .get(`/Admin/${uid}`, {
+        .get(`https://smarfee.vercel.app/Admin/${uid}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -61,7 +61,7 @@ function AdminLayout() {
 
   const renewStores = () => {
     axios
-      .get("/renewStores")
+      .get("https://smarfee.vercel.app/renewStores")
       .then((res) => {
         setBackendData((prev) => ({
           ...prev,
@@ -75,7 +75,7 @@ function AdminLayout() {
 
   const updateuUserAccount = ()=>{
     axios
-      .get("/updateUsers")
+      .get("https://smarfee.vercel.app/updateUsers")
       .then((res) => {
         setBackendData((prev) => ({
           ...prev,

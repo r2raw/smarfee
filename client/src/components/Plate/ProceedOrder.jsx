@@ -32,7 +32,7 @@ function ProceedOrder(props) {
     }
 
     try {
-      const response = await axios.post(`/Online-order/${uid}`, {
+      const response = await axios.post(`https://smarfee.vercel.app/Online-order/${uid}`, {
         items: items,
         service_type: serviceType,
       });

@@ -155,7 +155,7 @@ function ViewProducts() {
       let formdata = new FormData(e.target);
       formdata.append("productId", product.id);
       axios
-        .post("/uploadUpdateProductImg", formdata)
+        .post("https://smarfee.vercel.app/uploadUpdateProductImg", formdata)
         .then((res) => {
           if (res.data.status === "success") {
             setLoading(false);
@@ -171,7 +171,7 @@ function ViewProducts() {
   const noimg = useCallback(() => {
     if (product.id) {
       axios
-        .post("/uploadUpdateProduct", {
+        .post("https://smarfee.vercel.app/uploadUpdateProduct", {
           ...values,
           productId: product.id,
           origCateg: product.category,
@@ -192,7 +192,7 @@ function ViewProducts() {
     try {
       e.preventDefault(e);
       setLoading(true);
-      const response = await axios.post("/validateProductUpdate", {
+      const response = await axios.post("https://smarfee.vercel.app/validateProductUpdate", {
         ...values,
         prod_id: product.id,
       });

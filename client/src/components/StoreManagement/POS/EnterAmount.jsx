@@ -71,7 +71,7 @@ function EnterAmount(props) {
     const enteredAmount = amount;
 
     try {
-      const res = await axios.post("/POSPayment", {
+      const res = await axios.post("https://smarfee.vercel.app/POSPayment", {
         items: items,
         amountToPay: amountToPay,
         change: change,

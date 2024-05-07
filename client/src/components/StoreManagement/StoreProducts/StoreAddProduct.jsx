@@ -27,7 +27,7 @@ function StoreAddProduct() {
     let formdata = new FormData(e.target);
     formdata.append("storeId", backendData.vendor.store_id);
     axios
-      .post("/uploadProduct", formdata)
+      .post("https://smarfee.vercel.app/uploadProduct", formdata)
       .then((res) => {
         if (res.data.status === "success") {
           renewProduct();
@@ -145,7 +145,7 @@ function StoreAddProduct() {
     e.preventDefault(e);
     setLoading(true);
     axios
-      .post("/validateProduct", values)
+      .post("https://smarfee.vercel.app/validateProduct", values)
       .then((res) => {
         setLoading(false);
         if (res.data.status === "success") {

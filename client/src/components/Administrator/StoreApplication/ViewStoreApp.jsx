@@ -23,7 +23,7 @@ function ViewStoreApp() {
   const [rejectApplication, setRejectApplication] = useState(false);
   useEffect(() => {
     axios
-      .get(`/Admin/Store-Application/${store}`)
+      .get(`https://smarfee.vercel.app/Admin/Store-Application/${store}`)
       .then((response) => {
         setBackendData(response.data);
       })
@@ -102,7 +102,7 @@ function ViewStoreApp() {
   const handleConfirmReject = (comment) => {
     setLoading(true);
     axios
-      .post(`/Admin/Application-Reject/${store}`, { comment: comment })
+      .post(`https://smarfee.vercel.app/Admin/Application-Reject/${store}`, { comment: comment })
       .then((res) => {
         setLoading(false);
         if (res.data.status === "success") {

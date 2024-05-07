@@ -41,7 +41,7 @@ function UserRegistration(props) {
     formData.append("password", values.password);
     formData.append("confirmpassword", values.confirmpassword);
     axios
-      .post("/registercustomer", formData)
+      .post("https://smarfee.vercel.app/registercustomer", formData)
       .then((res) => {
         setLoading(false);
         if (res.data.status === "success") {

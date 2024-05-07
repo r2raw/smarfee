@@ -111,7 +111,7 @@ function Rejected() {
   const uploadStoreReg = useCallback((data) => {
     setLoadingSubmission(true);
     axios
-      .post("/store-registration", data)
+      .post("https://smarfee.vercel.app/store-registration", data)
       .then((response) => {
         setLoadingSubmission(false);
         if (response.data.status === "success") {
@@ -129,7 +129,7 @@ function Rejected() {
     }
 
     axios
-      .post("/validate-store-registration", newData)
+      .post("https://smarfee.vercel.app/validate-store-registration", newData)
       .then((res) => {
         if (res.data.status === "success") {
           let newData = new FormData(e.target);
