@@ -8,16 +8,16 @@ import {
   useGlobalFilter,
   usePagination,
 } from "react-table";
-import { PendingOnlineOrderColumns } from "./PendingOnlineOrderColumn";
+import CompletedOnlineOrdersFilter from "./CompletedOnlineOrdersFilter";
+import { CompletedOnlineOrderColumn } from "./CompletedOnlineOrderColumns";
 import ArrowDropUpSharpIcon from "@mui/icons-material/ArrowDropUpSharp";
 import ArrowDropDownSharpIcon from "@mui/icons-material/ArrowDropDownSharp";
 import ArrowBackIosNewSharpIcon from "@mui/icons-material/ArrowBackIosNewSharp";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
-import PendingOnlineOrderFilter from "./PendingOnlineOrderFilter";
 
-function PendingOnlineOrders(props) {
+function CompletedOnlineOrders(props) {
   const { orders } = props;
-  const columns = useMemo(() => PendingOnlineOrderColumns, []);
+  const columns = useMemo(() => CompletedOnlineOrderColumn, []);
   const data = useMemo(() => orders, []);
   const {
     getTableProps,
@@ -49,8 +49,8 @@ function PendingOnlineOrders(props) {
   return (
     <div className="table-container">
       <div className="table-search">
-        <h1>Pending orders</h1>
-        <PendingOnlineOrderFilter
+        <h1>Online orders</h1>
+        <CompletedOnlineOrdersFilter
           filter={globalFilter}
           setFilter={setGlobalFilter}
         />
@@ -143,4 +143,4 @@ function PendingOnlineOrders(props) {
   );
 }
 
-export default PendingOnlineOrders;
+export default CompletedOnlineOrders;

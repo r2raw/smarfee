@@ -47,10 +47,10 @@ function Home() {
           <MenuReco timelyThreats={timelyThreats} />
         </section>
       )}
-      <section>
+      {/* <section>
         <h1>Just for you</h1>
         <ForYou />
-      </section>
+      </section> */}
       <section>
         <h1>Café near me</h1>
         <NearestCafe />
