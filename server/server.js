@@ -70,7 +70,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 5000
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'https://smarfee-client.vercel.app'],
+    origin: ['https://smarfee-client.vercel.app'],
     methods: ['GET', 'POST'], 
     allowedHeaders: ['Content-Type', 'Authorization'], 
     credentials: true, 
@@ -771,7 +771,7 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) {
-      console.error(err); // Log the error for debugging
+      console.error(err); 
       return res.sendStatus(403);
     }
     req.user = user;
