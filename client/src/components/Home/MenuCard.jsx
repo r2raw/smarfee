@@ -3,7 +3,7 @@ import React from "react";
 import vouch1 from "../my-images/vouchers/voucher1.png";
 function MenuCard(props) {
   const { name, productname, productprice } = props.menu;
-  const url = `http://localhost:5000/storeProducts/${props.menu.productimg}`
+  const url = `https://smarfee.vercel.app/storeProducts/${props.menu.productimg}`
   return (
     <div className="menu card">
       <div className="menu img">
