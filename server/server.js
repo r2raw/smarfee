@@ -68,16 +68,16 @@ const app = express();
 // const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 5000;
-app.use(cors());
+// app.use(cors());
 
-// app.use(
-//   cors({
-//     origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
-//     methods: ["GET", "POST"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//     credentials: true,
-//   })
-// );
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://smarfee-4a29.vercel.app/"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 if (process.env.NODE_ENV === "production") {
 }
 app.use(cookieParser());
