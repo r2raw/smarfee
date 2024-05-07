@@ -68,15 +68,16 @@ const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 5000;
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
+//     methods: ["GET", "POST"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   })
+// );
 if (process.env.NODE_ENV === "production") {
 }
 app.use(cookieParser());
@@ -116,14 +117,14 @@ const addOnsStorage = multer.diskStorage({
   },
 });
 
-const io = new Server(server, {
-  cors: {
-    origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  },
-});
+// const io = new Server(server, {
+//   cors: {
+//     origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
+//     methods: ["GET", "POST"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true,
+//   },
+// });
 const productImage = multer({ storage: storeProductStorage });
 const vendorImage = multer({ storage: vendorImageStorage });
 const uploadStoreCreds = multer({ storage: storeCredentials });
@@ -782,6 +783,6 @@ function authenticateToken(req, res, next) {
 app.use("/", (req, res) => {
   res.send("Server is up");
 });
-server.listen(port, () => {
+app.listen(port, () => {
   console.log("Server running on port " + port);
 });
