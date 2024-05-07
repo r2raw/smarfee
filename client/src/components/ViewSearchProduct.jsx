@@ -27,7 +27,7 @@ function ViewSearchProduct() {
     <div className="container view-search-product">
       <div>
         <img
-          src={`http://localhost:5000/storeProducts/${viewedProducts.productimg}`}
+          src={`https://smarfee.vercel.app/storeProducts/${viewedProducts.productimg}`}
           alt="prodimg"
         />
       </div>
