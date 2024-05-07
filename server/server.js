@@ -65,7 +65,7 @@ import insertUserProfile from "./MyServerFunctions/Customer/insertUserProfile.js
 import updateUserEmail from "./MyServerFunctions/updateUserEmail.js";
 import pool from "./database.js";
 const app = express();
-const server = http.createServer(app);
+// const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 5000;
 app.use(cors());
