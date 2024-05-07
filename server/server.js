@@ -67,21 +67,20 @@ import pool from "./database.js";
 const app = express();
 const server = http.createServer(app);
 app.use(bodyParser.urlencoded({ extended: true }));
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5000;
 app.use(
   cors({
-    origin: ['https://smarfee-client.vercel.app'],
-    methods: ['GET', 'POST'], 
-    allowedHeaders: ['Content-Type', 'Authorization'], 
-    credentials: true, 
+    origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
-
+if (process.env.NODE_ENV === "production") {
+}
 app.use(cookieParser());
 app.use(express.json());
-
-
 
 const storeCredentials = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -119,8 +118,10 @@ const addOnsStorage = multer.diskStorage({
 
 const io = new Server(server, {
   cors: {
-    origin: "https://smarfee-client.vercel.app",
+    origin: ["http://localhost:3000", "https://smarfee-client.vercel.app"],
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   },
 });
 const productImage = multer({ storage: storeProductStorage });
@@ -129,22 +130,22 @@ const uploadStoreCreds = multer({ storage: storeCredentials });
 const addOnsImage = multer({ storage: addOnsStorage });
 app.use(express.static("public"));
 
-const db = new pg.Client({
-  user: process.env.POSTGRES_USER,
-  host:  process.env.POSTGRES_HOST,
-  database:  process.env.PG_DB,
-  password:  process.env.PG_PW,
-  port:  process.env.PG_PORT,
-});
-db.connect();
+// const db = new pg.Client({
+//   user: process.env.POSTGRES_USER,
+//   host: process.env.POSTGRES_HOST,
+//   database: process.env.PG_DB,
+//   password: process.env.PG_PW,
+//   port: process.env.PG_PORT,
+// });
+// db.connect();
 
-// const db = pool;
+const db = pool;
 
 const saltRounds = 16;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 app.get("/api", async (req, res) => {
   // const lat = 14.6999457;
   // const long = 121.0336896;
@@ -203,7 +204,7 @@ app.post("/login", async (req, res) => {
 app.post("/place-order", async (req, res) => {});
 app.get("/display-product", async (req, res) => {
   try {
-    console.log("dislay product")
+    console.log("dislay product");
     const availableProducts = await getAvailableProducts(db);
     res.json({ products: availableProducts });
   } catch (error) {
@@ -771,16 +772,16 @@ function authenticateToken(req, res, next) {
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
     if (err) {
-      console.error(err); 
+      console.error(err);
       return res.sendStatus(403);
     }
     req.user = user;
     next();
   });
 }
-app.use("/", (req,res)=>{
-  res.send("Server is up")
-})
+app.use("/", (req, res) => {
+  res.send("Server is up");
+});
 server.listen(port, () => {
   console.log("Server running on port " + port);
 });
