@@ -31,7 +31,7 @@ function LoginForm(props) {
     e.preventDefault();
     setLoggingIn(true);
     try {
-      const response = await axios.post("/login", {
+      const response = await axios.post("https://smarfee.vercel.app/login", {
         email: loginInput.email,
         password: loginInput.password,
       });
