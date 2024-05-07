@@ -72,12 +72,13 @@ const port = process.env.PORT || 5000;
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://smarfee-4a29.vercel.app/"],
+    origin: "*", // Allow requests from any origin
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 if (process.env.NODE_ENV === "production") {
 }
 app.use(cookieParser());
